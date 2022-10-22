@@ -820,7 +820,7 @@ function wp_roles() {
 }
 
 /**
- * Retrieves role object.
+ * Retrieve role object.
  *
  * @since 2.0.0
  *
@@ -832,7 +832,7 @@ function get_role( $role ) {
 }
 
 /**
- * Adds a role, if it does not exist.
+ * Add role, if it does not exist.
  *
  * @since 2.0.0
  *
@@ -850,7 +850,7 @@ function add_role( $role, $display_name, $capabilities = array() ) {
 }
 
 /**
- * Removes a role, if it exists.
+ * Remove role, if it exists.
  *
  * @since 2.0.0
  *
@@ -861,7 +861,7 @@ function remove_role( $role ) {
 }
 
 /**
- * Retrieves a list of super admins.
+ * Retrieve a list of super admins.
  *
  * @since 3.0.0
  *
@@ -880,7 +880,7 @@ function get_super_admins() {
 }
 
 /**
- * Determines whether user is a site admin.
+ * Determine if user is a site admin.
  *
  * @since 3.0.0
  *
@@ -888,7 +888,7 @@ function get_super_admins() {
  * @return bool Whether the user is a site admin.
  */
 function is_super_admin( $user_id = false ) {
-	if ( ! $user_id ) {
+	if ( ! $user_id || get_current_user_id() == $user_id ) {
 		$user = wp_get_current_user();
 	} else {
 		$user = get_userdata( $user_id );

@@ -80,10 +80,13 @@ function wp_version_check( $extra_stats = array(), $force_check = false ) {
 	}
 
 	if ( is_multisite() ) {
+		$user_count        = get_user_count();
 		$num_blogs         = get_blog_count();
 		$wp_install        = network_site_url();
 		$multisite_enabled = 1;
 	} else {
+		$user_count        = count_users();
+		$user_count        = $user_count['total_users'];
 		$multisite_enabled = 0;
 		$num_blogs         = 1;
 		$wp_install        = home_url( '/' );
@@ -96,7 +99,7 @@ function wp_version_check( $extra_stats = array(), $force_check = false ) {
 		'mysql'              => $mysql_version,
 		'local_package'      => isset( $wp_local_package ) ? $wp_local_package : '',
 		'blogs'              => $num_blogs,
-		'users'              => get_user_count(),
+		'users'              => $user_count,
 		'multisite_enabled'  => $multisite_enabled,
 		'initial_db_version' => get_site_option( 'initial_db_version' ),
 	);
@@ -140,7 +143,7 @@ function wp_version_check( $extra_stats = array(), $force_check = false ) {
 		$query['channel'] = WP_AUTO_UPDATE_CORE;
 	}
 
-	$url      = 'http://api.wordpress.org/core/version-check/1.7/?' . http_build_query( $query, '', '&' );
+	$url      = 'http://api.wordpress.org/core/version-check/1.7/?' . http_build_query( $query, null, '&' );
 	$http_url = $url;
 	$ssl      = wp_http_supports( array( 'ssl' ) );
 
@@ -514,7 +517,7 @@ function wp_update_plugins( $extra_stats = array() ) {
 		}
 	}
 
-	$sanitize_plugin_update_payload = static function( &$item ) {
+	$sanitize_plugin_update_payload = function( &$item ) {
 		$item = (object) $item;
 
 		unset( $item->translations, $item->compatibility );
@@ -565,7 +568,7 @@ function wp_update_themes( $extra_stats = array() ) {
 	$checked = array();
 	$request = array();
 
-	// Put slug of active theme into request.
+	// Put slug of current theme into request.
 	$request['active'] = get_option( 'stylesheet' );
 
 	foreach ( $installed_themes as $theme ) {
